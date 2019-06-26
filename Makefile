@@ -1,7 +1,7 @@
 DIRO = ./build
 DIRI = ./src
 
-release:
+release: clean
 	mkdir -p $(DIRO)
 	gcc -o $(DIRO)/juego $(DIRI)/main.c
 
