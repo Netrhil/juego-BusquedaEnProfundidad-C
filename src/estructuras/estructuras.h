@@ -1,7 +1,3 @@
-typedef struct zona { 
-   char tipo;
-}zona;
-
 typedef struct pos{
 	int x;
 	int y;
@@ -16,11 +12,8 @@ typedef struct listaEstados{
 	int n;
 }listaEstados;
 
-struct zona **matrizPiso;
-
-struct ficha { 
-   char tipo;
-};
-
-struct ficha **tablero;
-
+typedef struct piso{
+	int largo;
+	int ancho;
+	char ** matriz;
+} Piso;

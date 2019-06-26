@@ -4,102 +4,72 @@
 #include <unistd.h>
 #include "../estructuras/estructuras.h"
 
-
 void obtenerPiso(char piso) {
 
-    char directorioPiso[19];
-    FILE *manejadorArchivoLargos;
+    FILE *manejadorArchivos;
     char linea[150];
-    char directorioProyecto[256];
-/* 
-    char *lineaParaLargos = NULL;
-    size_t longitudParaLargos = 0;
-    size_t numeroLinea;
- */
-    
-/*     strcpy(directorioPiso, "/home/netrhil/Repos/juego-BusquedaProfundidad/src/pisos/piso1.txt"); */
+    char directorioProyecto[100];
+    int largoAuxiliar = 0, anchoAuxiliar =0;
+
+    // Genera el path del directorio 
     getcwd(directorioProyecto, sizeof(directorioProyecto));
-    
+
     strcat(directorioProyecto, "/src/pisos/piso");
     strcat(directorioProyecto, &piso);
     strcat(directorioProyecto, ".txt");
 
-    puts(directorioProyecto);
+    manejadorArchivos = fopen(directorioProyecto, "r");
 
-    manejadorArchivoLargos = fopen(directorioProyecto, "r");
-
-    if(manejadorArchivoLargos == NULL)
+    if(manejadorArchivos == NULL)
         printf("No hay fichero");
 
-    fgets(linea, 150, manejadorArchivoLargos);
+    // Lee las primeras dos lineas del archivo , ancho y alto
+    fgets(linea, 150, manejadorArchivos);
     int largoLaberinto = atoi(&linea[0]);
-    fgets(linea, 150, manejadorArchivoLargos);
+    fgets(linea, 150, manejadorArchivos);
     int anchoLaberinto = atoi(&linea[0]);
 
-    fclose(manejadorArchivoLargos);
 
-    char **cosa=( char**) malloc(sizeof( char*)*largoLaberinto);
-
-   for(int i=0;i<largoLaberinto;i++){
-      cosa[i]=( char*) malloc(sizeof( char)*anchoLaberinto);
-   }
-
-
-   for(int i=0;i<largoLaberinto;i++){
-      for(int j=0;j<anchoLaberinto;j++){
-         cosa[i][j] = '_';
-      }
-   }
-
-   for(int i=0;i<largoLaberinto;i++){
-      for(int j=0;j<anchoLaberinto;j++){
-        printf("%c", cosa[i][j]);
-      }
-      puts("\n");
-   }
-
-    /* matrizPiso=( struct zona**) malloc(sizeof( struct zona*)*largoLaberinto);
+    // Generando la matriz
+    char **matrizPiso = malloc(sizeof( char*) * largoLaberinto);
 
     for(int i=0;i<largoLaberinto;i++){
-        matrizPiso[i]=( struct zona*) malloc(sizeof( struct zona)*anchoLaberinto);
+        matrizPiso[i] = malloc(sizeof( char) * anchoLaberinto);
     }
 
-    for(int i=0;i<anchoLaberinto;i++){
-        for(int j=0;j<largoLaberinto;j++){
-            matrizPiso[i][j].tipo = '_';
-        }
-    } */
 
- /*    for(int i=0;i<largoLaberinto;i++){
-            printf("\n");
-        for(int j=0;j<anchoLaberinto;j++){
-            printf("%c ",matrizPiso[i][j].tipo);
-        }
-        printf("\n");
-    } */
+    //Lee las lineas restantes y las agrega a la matriz
+    while (fgets(linea, 150, manejadorArchivos) != NULL) {
+            
+            for (size_t i = 0; i < 150; i++) {
+                if( anchoAuxiliar < anchoLaberinto){
+                    if (    linea[i] == 'I' || 
+                            linea[i] == 'C' || 
+                            linea[i] == 'M' || 
+                            linea[i] == 'B' || 
+                            linea[i] == 'S' || 
+                            linea[i] == 'L' || 
+                            linea[i] == 'T') {
 
-
-    /* fscanf(manejadorArchivoLargos, "%s", buff);
-  
-
-    fgets(buff, 255, (FILE*)manejadorArchivoLargos);
-    fgets(buff, 255, (FILE*)manejadorArchivoLargos);
-    
-   
-
-   
- */
-
-
-   /*  while ((numeroLinea = getline(&linea, &longitud, manejadorArchivo)) != -1) {
-               
-                for (int i = 0; i < longitud; i++) {
-                    if (linea[i] != ' ') {
-                        printf("%c", linea[i]);
+                        matrizPiso[largoAuxiliar][anchoAuxiliar] = linea[i];
+                        anchoAuxiliar++;
                     }
                 }
+                
+            }
+            anchoAuxiliar = 0;
+            largoAuxiliar++;
     }
-    */
 
+    puts("Piso: ");
+
+    for (int i = 0; i < largoLaberinto; i++) {
+        for (int j = 0; j < anchoLaberinto; j++) {
+           printf("%c", matrizPiso[i][j]);
+        }
+        puts("\n");
+    }
     
+
+   fclose(manejadorArchivos);
 }
